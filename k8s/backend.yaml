@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: ollive
+data:
+  DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/ollive
+  REDIS_URL: redis://redis:6379
+  LLM_PROVIDER: openai
+  LLM_MODEL: llama-3.3-70b-versatile
+  OPENAI_BASE_URL: https://api.groq.com/openai/v1
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secret
+  namespace: ollive
+type: Opaque
+stringData:
+  OPENAI_API_KEY: "your-groq-api-key-here"
+  ANTHROPIC_API_KEY: ""
+  GEMINI_API_KEY: ""
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: ollive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: ollive-ai-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secret
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: ollive
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 8000
+      targetPort: 8000
