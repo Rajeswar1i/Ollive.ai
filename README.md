@@ -4,6 +4,18 @@ A full-stack platform for monitoring and observing LLM inference calls. Captures
 
 ---
 
+## Demo
+
+| Chat | Dashboard |
+|---|---|
+| ![Chat](screenshots/1.IndivudualChat.png) | ![Dashboard](screenshots/2.Dashboard.png) |
+| ![Conversations](screenshots/3.MultipleChat.png) | ![Dashboard Metrics](screenshots/4.DashboardM.png) |
+
+**Kubernetes pods running:**
+![K8s Pods](screenshots/5.K8%20Pods.png)
+
+---
+
 ## Features
 
 - **Multi-provider LLM support** — Anthropic Claude, OpenAI, Groq (OpenAI-compatible), Google Gemini
